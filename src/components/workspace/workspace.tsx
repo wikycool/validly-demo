@@ -589,7 +589,7 @@ function PeerSetStep({ onNext, onBack }: { onNext: () => void; onBack: () => voi
         How does 3.7% compare?
       </h1>
       <p className="mt-2 max-w-2xl text-lg text-muted-foreground text-pretty">
-        Validly found six comparable Nordic brands that already entered Germany.
+        Validly found 46 comparable Nordic brands that already entered Germany.
         Names stay private.
       </p>
 
@@ -611,7 +611,7 @@ function PeerSetStep({ onNext, onBack }: { onNext: () => void; onBack: () => voi
             <div className="text-right">
               <p className="font-mono text-xs uppercase tracking-wider text-muted-foreground">Peer median</p>
               <p className="mt-1 font-display text-3xl font-semibold tabular-nums tracking-tight text-foreground">{peers.medianConversion}</p>
-              <p className="mt-1 font-mono text-xs text-muted-foreground">6 comparable brands</p>
+              <p className="mt-1 font-mono text-xs text-muted-foreground">{peers.n} comparable brands</p>
             </div>
           </div>
 
