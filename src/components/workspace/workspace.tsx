@@ -36,6 +36,7 @@ const STEP_LABELS: { id: Step; label: string }[] = [
 export function Workspace() {
   const [step, setStep] = React.useState<Step>("connect");
   const [maxStep, setMaxStep] = React.useState<Step>("connect");
+  const [probeComplete, setProbeComplete] = React.useState(false);
 
   const goTo = (s: Step) => {
     setStep(s);
@@ -88,8 +89,23 @@ export function Workspace() {
         <AnimatePresence mode="wait">
           {step === "connect" && <ConnectStep key="connect" onNext={() => goTo("signals")} />}
           {step === "signals" && <SignalsStep key="signals" onPick={() => goTo("probe")} />}
-          {step === "probe" && <ProbeStep key="probe" onRun={() => goTo("results")} />}
-          {step === "results" && <ResultsStep key="results" onNext={() => goTo("peerset")} />}
+          {step === "probe" && (
+            <ProbeStep
+              key="probe"
+              onRun={() => {
+                setProbeComplete(false);
+                goTo("results");
+              }}
+            />
+          )}
+          {step === "results" && (
+            <ResultsStep
+              key="results"
+              initialComplete={probeComplete}
+              onComplete={() => setProbeComplete(true)}
+              onNext={() => goTo("peerset")}
+            />
+          )}
           {step === "peerset" && <PeerSetStep key="peerset" onNext={() => goTo("verdict")} onBack={() => goTo("results")} />}
           {step === "verdict" && <VerdictStep key="verdict" onPrimary={() => goTo("probe")} onSecondary={() => goTo("peerset")} />}
         </AnimatePresence>
@@ -318,11 +334,11 @@ function ProbeStep({ onRun }: { onRun: () => void }) {
     >
       <Eyebrow n="03" label="Probe" tone="amber" />
       <h1 className="mt-2 font-display text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">
-        Germany · 14-day market probe
+        Germany · 14-day organic probe
       </h1>
       <p className="mt-2 max-w-3xl text-base text-muted-foreground text-pretty">
-        The selected creative sends German customers to a localized Heely product
-        page. Orders, not views, determine the verdict.
+        We post one native reel with a tracked link in the bio or description. Only
+        verified German visits and completed orders count.
       </p>
 
       {/* Three summary cards */}
@@ -346,7 +362,7 @@ function ProbeStep({ onRun }: { onRun: () => void }) {
           {/* LEFT - Traffic creative */}
           <div className="flex flex-col">
             <div className="flex items-center justify-between gap-2">
-              <p className="font-mono text-xs uppercase tracking-wider text-muted-foreground">1 · Traffic creative</p>
+              <p className="font-mono text-xs uppercase tracking-wider text-muted-foreground">1 · Organic reel</p>
               <span className="inline-flex items-center gap-1 rounded-full bg-sage/15 px-2.5 py-0.5 text-xs font-semibold text-sage-deep">
                 <Check className="h-3 w-3" />
                 Selected for probe
@@ -403,7 +419,7 @@ function ProbeStep({ onRun }: { onRun: () => void }) {
 
         <div className="mt-3 flex justify-end border-t border-border/60 pt-3">
           <PrimaryButton onClick={onRun}>
-            Start 14-day probe
+            Start organic probe
             <ArrowRight className="h-5 w-5" />
           </PrimaryButton>
         </div>
@@ -413,8 +429,45 @@ function ProbeStep({ onRun }: { onRun: () => void }) {
 }
 
 /* ---------------- 04 Results ---------------- */
-function ResultsStep({ onNext }: { onNext: () => void }) {
+function ResultsStep({
+  initialComplete,
+  onComplete,
+  onNext,
+}: {
+  initialComplete: boolean;
+  onComplete: () => void;
+  onNext: () => void;
+}) {
   const p = PROBE;
+  const [day, setDay] = React.useState(initialComplete ? 14 : 1);
+
+  React.useEffect(() => {
+    if (initialComplete) return;
+
+    let currentDay = 1;
+    const timer = window.setInterval(() => {
+      currentDay += 1;
+      setDay(currentDay);
+      if (currentDay === 14) {
+        window.clearInterval(timer);
+        onComplete();
+      }
+    }, 350);
+
+    return () => window.clearInterval(timer);
+  }, [initialComplete, onComplete]);
+
+  const complete = day === 14;
+  const progress = (day - 1) / 13;
+  const atDay = (total: number) => Math.round(total * progress);
+  const views = atDay(p.reelViews);
+  const engaged = atDay(p.engaged);
+  const visits = atDay(p.pageVisits);
+  const carts = atDay(p.addToCarts);
+  const orders = atDay(p.orders);
+  const pageConversion = visits ? `${((orders / visits) * 100).toFixed(1)}%` : "0.0%";
+  const viewToVisit = views ? `${((visits / views) * 100).toFixed(2)}%` : "0.00%";
+
   return (
     <motion.section
       initial={{ opacity: 0, y: 12 }}
@@ -424,50 +477,65 @@ function ResultsStep({ onNext }: { onNext: () => void }) {
     >
       <Eyebrow n="04" label="Results" tone="clay" />
       <h1 className="mt-2 font-display text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
-        Germany · day 14 of 14
+        Germany · day {day} of 14
       </h1>
       <p className="mt-2 max-w-2xl text-lg text-muted-foreground text-pretty">
-        The probe reached the time limit before the €2,000 media cap.
+        {complete
+          ? "Organic attention reached the product page. Now we measure purchase intent."
+          : "Tracking verified German visitors from the organic reel to completed orders."}
       </p>
 
-      <div className="mt-5 flex flex-wrap items-center gap-2 rounded-xl border border-border/60 bg-card/50 px-4 py-2.5 font-mono text-sm font-medium text-foreground">
-        <span className="inline-flex items-center gap-1.5">
-          <Check className="h-4 w-4 text-sage-deep" />
-          14 days complete
-        </span>
-        <span className="text-muted-foreground/40">·</span>
-        <span>{p.actualSpend} of {p.budgetCap} cap</span>
-        <span className="text-muted-foreground/40">·</span>
-        <span>{p.orders} orders</span>
+      <div className="mt-5 overflow-hidden rounded-xl border border-border/60 bg-card/50">
+        <div className="flex flex-wrap items-center gap-2 px-4 py-2.5 font-mono text-sm font-medium text-foreground">
+          <span className="inline-flex items-center gap-1.5">
+            {complete ? (
+              <Check className="h-4 w-4 text-sage-deep" />
+            ) : (
+              <LoaderCircle className="h-4 w-4 animate-spin text-sage-deep" />
+            )}
+            {complete ? "14 days complete" : `Day ${day} in progress`}
+          </span>
+          <span className="text-muted-foreground/40">·</span>
+          <span>{visits} verified German visits</span>
+          <span className="text-muted-foreground/40">·</span>
+          <span>{orders} orders</span>
+        </div>
+        <div className="h-1 bg-muted">
+          <motion.div
+            className="h-full bg-sage"
+            animate={{ width: `${(day / 14) * 100}%` }}
+            transition={{ duration: 0.25, ease: "easeOut" }}
+          />
+        </div>
       </div>
 
       <div className="mt-6">
         <p className="font-mono text-xs uppercase tracking-wider text-muted-foreground/60">Diagnostics</p>
-        <div className="mt-2 grid grid-cols-2 gap-3 sm:grid-cols-4">
-          <QuietMetric label="Views" value={p.reelViews.toLocaleString("en-US")} />
-          <QuietMetric label="Engaged" value={p.engaged.toLocaleString("en-US")} />
-          <QuietMetric label="Product-page visits" value={String(p.pageVisits)} />
-          <QuietMetric label="Add to carts" value={String(p.addToCarts)} />
+        <div className="mt-2 grid grid-cols-3 gap-3">
+          <QuietMetric label="Views" value={views.toLocaleString("en-US")} />
+          <QuietMetric label="Engaged" value={engaged.toLocaleString("en-US")} />
+          <QuietMetric label="Add to carts" value={String(carts)} />
         </div>
       </div>
 
       <div className="mt-6">
         <p className="font-mono text-xs uppercase tracking-wider text-muted-foreground/60">Decision metrics</p>
         <div className="mt-2 grid grid-cols-2 gap-3 sm:grid-cols-4">
-          <BigMetric label="Orders" value={String(p.orders)} tone="sage" />
-          <BigMetric label="Probe CAC" value={p.probeCac} tone="sage" />
-          <SmallMetric label="Media spend" value={p.actualSpend} />
-          <SmallMetric label="Product-page CVR" value="3.7%" />
+          <BigMetric label="Orders" value={String(orders)} tone="sage" />
+          <BigMetric label="Product-page conversion" value={pageConversion} tone="sage" />
+          <SmallMetric label="Verified German visits" value={String(visits)} />
+          <SmallMetric label="View-to-visit rate" value={viewToVisit} />
         </div>
       </div>
 
       <p className="mt-4 max-w-3xl text-lg leading-relaxed text-muted-foreground text-pretty">
-        Eight German customers bought. Now Validly checks whether €86 CAC is
-        competitive for a Nordic footwear brand entering Germany.
+        {complete
+          ? "Eight German customers bought. Now Validly checks whether 3.7% conversion is competitive for a Nordic footwear brand entering Germany."
+          : "The verdict stays locked until the 14-day observation window is complete."}
       </p>
 
-      <PrimaryButton className="mt-6" onClick={onNext}>
-        Compare with peers
+      <PrimaryButton className="mt-6" onClick={onNext} disabled={!complete}>
+        {complete ? "Compare with peers" : `Collecting day ${day} data`}
         <ArrowRight className="h-5 w-5" />
       </PrimaryButton>
     </motion.section>
@@ -518,7 +586,7 @@ function PeerSetStep({ onNext, onBack }: { onNext: () => void; onBack: () => voi
     >
       <Eyebrow n="05" label="Peer set" tone="sage" />
       <h1 className="mt-2 font-display text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
-        How does €86 compare?
+        How does 3.7% compare?
       </h1>
       <p className="mt-2 max-w-2xl text-lg text-muted-foreground text-pretty">
         Validly found six comparable Nordic brands that already entered Germany.
@@ -537,29 +605,29 @@ function PeerSetStep({ onNext, onBack }: { onNext: () => void; onBack: () => voi
         <div className="rounded-2xl border border-border/60 bg-card/70 p-5 sm:p-6">
           <div className="flex flex-wrap items-start justify-between gap-4">
             <div>
-              <p className="font-mono text-xs uppercase tracking-wider text-muted-foreground">Your probe CAC</p>
-              <p className="mt-1 font-display text-5xl font-semibold tabular-nums tracking-tight text-clay">€86</p>
+              <p className="font-mono text-xs uppercase tracking-wider text-muted-foreground">Your product-page conversion</p>
+              <p className="mt-1 font-display text-5xl font-semibold tabular-nums tracking-tight text-clay">{p.pageConversion}</p>
             </div>
             <div className="text-right">
               <p className="font-mono text-xs uppercase tracking-wider text-muted-foreground">Peer median</p>
-              <p className="mt-1 font-display text-3xl font-semibold tabular-nums tracking-tight text-foreground">€68</p>
+              <p className="mt-1 font-display text-3xl font-semibold tabular-nums tracking-tight text-foreground">{peers.medianConversion}</p>
               <p className="mt-1 font-mono text-xs text-muted-foreground">6 comparable brands</p>
             </div>
           </div>
 
           <div className="mt-7">
             <div className="relative h-4 rounded-full bg-muted">
-              <div className="absolute h-full rounded-full bg-sage/30" style={{ left: "18%", width: "38%" }} />
-              <div className="absolute top-1/2 h-7 w-1.5 -translate-y-1/2 rounded-full bg-clay" style={{ left: "84%" }} />
+              <div className="absolute h-full rounded-full bg-sage/30" style={{ left: "45%", width: "40%" }} />
+              <div className="absolute top-1/2 h-7 w-1.5 -translate-y-1/2 rounded-full bg-clay" style={{ left: "18%" }} />
             </div>
             <div className="relative mt-2 h-5 font-mono text-xs text-muted-foreground">
-              <span className="absolute left-[18%] -translate-x-1/2">€59</span>
-              <span className="absolute left-[56%] -translate-x-1/2">€74</span>
-              <span className="absolute left-[84%] -translate-x-1/2 font-semibold text-clay">You €86</span>
+              <span className="absolute left-[18%] -translate-x-1/2 font-semibold text-clay">You 3.7%</span>
+              <span className="absolute left-[45%] -translate-x-1/2">4.8%</span>
+              <span className="absolute left-[85%] -translate-x-1/2">6.4%</span>
             </div>
             <div className="mt-2 flex items-center gap-2 text-sm text-muted-foreground">
               <span className="h-2.5 w-6 rounded-full bg-sage/30" />
-              Brands that later scaled landed between €59 and €74
+              Brands that later scaled converted between 4.8% and 6.4%
             </div>
           </div>
 
@@ -568,28 +636,36 @@ function PeerSetStep({ onNext, onBack }: { onNext: () => void; onBack: () => voi
           </div>
         </div>
 
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-1">
+        <div className="grid gap-4">
           <div className="rounded-2xl border border-border/60 bg-card/60 p-5">
-            <p className="font-mono text-xs uppercase tracking-wider text-muted-foreground">Signal before the probe</p>
-            <div className="mt-3 flex items-end gap-3">
-              <div>
-                <p className="font-mono text-xs uppercase tracking-wider text-muted-foreground">You</p>
-                <p className="font-display text-3xl font-semibold tabular-nums tracking-tight text-foreground">0.22×</p>
-              </div>
-              <span className="pb-1 font-mono text-xs text-muted-foreground/50">vs</span>
-              <div>
-                <p className="font-mono text-xs uppercase tracking-wider text-muted-foreground">Peer median</p>
-                <p className="font-display text-2xl font-semibold tabular-nums tracking-tight text-muted-foreground">0.38×</p>
-              </div>
+            <div className="grid grid-cols-[1fr_auto_auto] gap-x-4 border-b border-border/50 pb-2 font-mono text-xs uppercase tracking-wider text-muted-foreground">
+              <span>Full funnel</span>
+              <span>You</span>
+              <span>Peers</span>
             </div>
+            {[
+              ["View to visit", peers.visitRateYou, peers.visitRatePeer],
+              ["Visit to cart", p.addToCartRate, peers.addToCartRate],
+              ["Visit to order", p.pageConversion, peers.medianConversion],
+              ["Revenue / visit", p.revenuePerVisit, peers.revenuePerVisit],
+            ].map(([label, you, median]) => (
+              <div key={label} className="grid grid-cols-[1fr_auto_auto] gap-x-4 border-b border-border/35 py-2.5 last:border-0 last:pb-0">
+                <span className="text-sm text-muted-foreground">{label}</span>
+                <span className="font-mono text-sm font-semibold tabular-nums text-clay">{you}</span>
+                <span className="min-w-12 text-right font-mono text-sm tabular-nums text-foreground">{median}</span>
+              </div>
+            ))}
           </div>
 
           <div className="rounded-2xl border border-border/60 bg-card/60 p-5">
-            <p className="font-mono text-xs uppercase tracking-wider text-muted-foreground">What happened next</p>
-            <p className="mt-2 font-display text-3xl font-semibold tabular-nums tracking-tight text-foreground">
-              {peers.scaledCount}
-            </p>
-            <p className="mt-1 text-base text-muted-foreground">peers scaled in Germany within 18 months</p>
+            <p className="font-mono text-xs uppercase tracking-wider text-muted-foreground">What successful peers did next</p>
+            <div className="mt-2 flex items-baseline gap-2">
+              <p className="font-display text-3xl font-semibold tabular-nums tracking-tight text-foreground">
+                {peers.scaledCount}
+              </p>
+              <p className="text-sm text-muted-foreground">scaled within 18 months</p>
+            </div>
+            <p className="mt-2 border-t border-border/40 pt-2 text-sm font-medium text-foreground">{peers.routeMix}</p>
           </div>
         </div>
       </div>
@@ -597,8 +673,8 @@ function PeerSetStep({ onNext, onBack }: { onNext: () => void; onBack: () => voi
       <div className="mt-5 flex items-start gap-2.5 rounded-xl border border-sage/20 bg-sage-soft/40 p-4">
         <TrendingUp className="mt-0.5 h-5 w-5 shrink-0 text-sage-deep" />
         <p className="text-base leading-relaxed text-foreground text-pretty">
-          Germany can work. Comparable brands acquired customers for less, so
-          Heely&apos;s current route is not ready to scale.
+          Germany can work. Comparable brands converted more of their organic
+          visitors, so Heely&apos;s current route is not ready to scale.
         </p>
       </div>
 
@@ -640,13 +716,13 @@ function VerdictStep({
         </span>
       </div>
       <p className="mt-1 text-lg text-muted-foreground text-pretty">
-        Demand exists. The current route is too expensive.
+        Demand exists. The current route creates too much purchase friction.
       </p>
 
       {/* Four summary metrics */}
       <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
-        <SummaryMetric label="Probe CAC" value={p.probeCac} />
-        <SummaryMetric label="Peer median" value={p.peers.medianCac} />
+        <SummaryMetric label="Product-page conversion" value={p.pageConversion} />
+        <SummaryMetric label="Peer median" value={p.peers.medianConversion} />
         <SummaryMetric label="Later-scaler band" value={p.peers.scaledBand} />
         <SummaryMetric label="Orders" value={String(p.orders)} />
       </div>

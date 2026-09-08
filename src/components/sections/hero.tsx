@@ -111,7 +111,7 @@ export function Hero() {
       <div className="pointer-events-none absolute inset-0 hidden lg:block">
         <VerdictOrb
           label="GO"
-          sub="Netherlands · €61 CAC"
+          sub="Netherlands · strong signal"
           tone="go"
           parallax={parallaxGo}
           delay={0.8}
@@ -119,7 +119,7 @@ export function Hero() {
         />
         <VerdictOrb
           label="NOT YET"
-          sub="Germany · €86 CAC"
+          sub="Germany · 3.7% conversion"
           tone="notyet"
           parallax={parallaxNotYet}
           delay={1.0}

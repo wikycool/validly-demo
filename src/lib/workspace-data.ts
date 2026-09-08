@@ -1,7 +1,4 @@
-/**
- * validly workspace data - one canonical Germany story.
- * All numbers verified: €688 spend ÷ 8 orders = €86 probe CAC.
- */
+/** Validly workspace data for one canonical organic Germany probe. */
 
 export const HEELY = {
   name: "Heely",
@@ -11,7 +8,6 @@ export const HEELY = {
   product: "The All-Day Heel",
   price: "€189",
   home: "Denmark",
-  homeCac: "€49",
   headline: "Heels you can wear all day.",
 };
 
@@ -88,25 +84,27 @@ export type ProbeResult = {
   product: string;
   price: string;
   duration: string;
-  budgetCap: string;
-  actualSpend: string;
   reelViews: number;
   engaged: number;
   pageVisits: number;
   addToCarts: number;
   orders: number;
-  probeCac: string;
-  homeCac: string;
-  cacVsHome: string;
+  viewToVisit: string;
+  addToCartRate: string;
+  pageConversion: string;
+  revenuePerVisit: string;
   verdict: VerdictKey;
   peers: {
     n: number;
-    medianCac: string;
+    medianConversion: string;
     scaledBand: string;
     ranking: string;
-    preEntryYou: string;
-    preEntryPeer: string;
+    visitRateYou: string;
+    visitRatePeer: string;
+    addToCartRate: string;
+    revenuePerVisit: string;
     scaledCount: string;
+    routeMix: string;
   };
   why: string;
   whatChanges: string;
@@ -120,37 +118,39 @@ export const PROBE: ProbeResult = {
   product: "The All-Day Heel",
   price: "€189",
   duration: "14 days",
-  budgetCap: "€2,000",
-  actualSpend: "€688",
   reelViews: 92400,
   engaged: 3180,
   pageVisits: 214,
   addToCarts: 31,
   orders: 8,
-  probeCac: "€86",
-  homeCac: "€49",
-  cacVsHome: "1.76×",
+  viewToVisit: "0.23%",
+  addToCartRate: "14.5%",
+  pageConversion: "3.7%",
+  revenuePerVisit: "€7.07",
   verdict: "NOT YET",
   peers: {
     n: 6,
-    medianCac: "€68",
-    scaledBand: "€59–€74",
+    medianConversion: "5.2%",
+    scaledBand: "4.8% to 6.4%",
     ranking: "Worse than 5 of 6 peers",
-    preEntryYou: "0.22×",
-    preEntryPeer: "0.38×",
+    visitRateYou: "0.23%",
+    visitRatePeer: "0.35%",
+    addToCartRate: "16.8%",
+    revenuePerVisit: "€9.40",
     scaledCount: "4 of 6",
+    routeMix: "3 localized DTC · 1 retail-first",
   },
-  why: "Heely acquired German customers at €86. The peer median is €68, and brands that later scaled landed between €59 and €74. Heely is currently outside the viable range.",
-  whatChanges: "Bring probe CAC into the €59 to €74 range for two consecutive rounds.",
+  why: "Eight German customers bought, but only 3.7% of tracked product-page visitors converted. Comparable brands reached a 5.2% median, and later scalers landed between 4.8% and 6.4%.",
+  whatChanges: "Bring product-page conversion into the 4.8% to 6.4% range for two consecutive probes.",
   routes: [
     {
       title: "Localize checkout and returns",
-      desc: "Remove German purchase friction before buying more traffic.",
+      desc: "Remove German purchase friction before driving more traffic.",
       badge: "Recommended",
     },
     {
       title: "Test the offer",
-      desc: "Keep the product and market fixed, then test price and messaging against orders.",
+      desc: "Keep the product and market fixed, then test price and messaging against completed orders.",
     },
     {
       title: "Retail partner first",
@@ -160,9 +160,9 @@ export const PROBE: ProbeResult = {
 };
 
 export const PROBE_DESIGN = [
-  { label: "Traffic", value: "DE-01 · problem-led" },
-  { label: "Storefront", value: "German product page" },
-  { label: "Decision metric", value: "Orders and implied CAC" },
+  { label: "Content", value: "DE-01 · organic reel" },
+  { label: "Destination", value: "Tracked German product page" },
+  { label: "Decision metric", value: "Orders and conversion" },
 ];
 
 export const PEER_FILTERS = ["Footwear & apparel", "Germany", "Nordic DTC", "AOV €150–€220"];
