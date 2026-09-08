@@ -10,7 +10,6 @@ import {
   Lock,
   LoaderCircle,
   TrendingUp,
-  ShieldCheck,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
@@ -304,11 +303,6 @@ function SignalsStep({ onPick }: { onPick: () => void }) {
         </div>
       </div>
 
-      <p className="mt-3 font-mono text-sm text-muted-foreground/70">
-        Netherlands is the strongest opportunity. Germany has more traffic but
-        weaker purchase intent. A controlled probe will show whether the problem
-        is demand, localization or the offer.
-      </p>
     </motion.section>
   );
 }
@@ -358,8 +352,6 @@ function ProbeStep({ onRun }: { onRun: () => void }) {
                 Selected for probe
               </span>
             </div>
-            <p className="mt-1.5 text-sm text-muted-foreground">2 concepts evaluated · DE-01 selected</p>
-
             <video
               src="/reels/de-01.mp4"
               poster="/reels/de-01.jpg"
@@ -368,9 +360,6 @@ function ProbeStep({ onRun }: { onRun: () => void }) {
               preload="metadata"
               className="mt-2 aspect-[9/16] w-full max-w-[280px] rounded-xl border border-border/60 bg-card/60 object-cover shadow-[0_20px_50px_-25px_oklch(0.45_0.11_160/0.5)]"
             />
-            <p className="mt-2 font-mono text-sm uppercase tracking-wider text-muted-foreground/70">
-              DE-01 · Problem-led · 15 seconds
-            </p>
           </div>
 
           {/* RIGHT - What German customers see (browser-style, top aligned) */}
@@ -409,17 +398,10 @@ function ProbeStep({ onRun }: { onRun: () => void }) {
               </div>
             </div>
 
-            <p className="mt-2 font-mono text-sm text-muted-foreground/70">
-              Every completed order is attributed back to DE-01.
-            </p>
           </div>
         </div>
 
-        {/* Bottom action row - spans full width */}
-        <div className="mt-3 flex flex-col items-stretch justify-between gap-3 border-t border-border/60 pt-3 sm:flex-row sm:items-center">
-          <p className="font-mono text-sm text-muted-foreground">
-            €2,000 media cap · Heely&apos;s own ad account · 14 days
-          </p>
+        <div className="mt-3 flex justify-end border-t border-border/60 pt-3">
           <PrimaryButton onClick={onRun}>
             Start 14-day probe
             <ArrowRight className="h-5 w-5" />
@@ -540,6 +522,7 @@ function PeerSetStep({ onNext, onBack }: { onNext: () => void; onBack: () => voi
       </h1>
       <p className="mt-2 max-w-2xl text-lg text-muted-foreground text-pretty">
         Validly found six comparable Nordic brands that already entered Germany.
+        Names stay private.
       </p>
 
       <div className="mt-4 flex flex-wrap items-center gap-2">
@@ -619,11 +602,7 @@ function PeerSetStep({ onNext, onBack }: { onNext: () => void; onBack: () => voi
         </p>
       </div>
 
-      <div className="mt-4 flex flex-wrap items-center justify-between gap-4">
-        <p className="flex items-center gap-1.5 font-mono text-sm text-muted-foreground/60">
-          <ShieldCheck className="h-4 w-4" />
-          Cohort results only. Brand and customer data stay private.
-        </p>
+      <div className="mt-4 flex justify-end">
         <PrimaryButton onClick={onNext}>
           See the verdict
           <ArrowRight className="h-5 w-5" />
@@ -720,9 +699,6 @@ function VerdictStep({
         </SecondaryButton>
       </div>
 
-      <p className="mt-4 font-mono text-sm text-muted-foreground/60">
-        This result joins the peer set anonymously. The cohort grows from 6 to 7.
-      </p>
     </motion.section>
   );
 }

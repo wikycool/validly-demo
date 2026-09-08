@@ -97,9 +97,6 @@ export function VerdictDemo() {
             playsInline
             className="aspect-[9/16] w-full rounded-2xl border border-border/60 bg-card/60 object-cover shadow-[0_30px_80px_-40px_oklch(0.45_0.11_160/0.5)]"
           />
-          <p className="mt-3 font-mono text-base uppercase tracking-wider text-muted-foreground/70">
-            DE-01 · problem-led · German market
-          </p>
         </Reveal>
       </div>
     </section>
