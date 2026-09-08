@@ -164,16 +164,11 @@ export function Hero() {
           </h1>
         </Reveal>
 
-        {/* Subhead - exact copy */}
+        {/* Subhead */}
         <Reveal delay={0.16} className="mt-7 max-w-3xl">
           <p className="text-pretty text-lg leading-relaxed text-muted-foreground sm:text-xl">
-            Validly connects to your Shopify store, reads 24 months of demand by
-            country, and returns{" "}
-            <span className="font-semibold text-sage-deep">
-              GO / NOT YET / NO-GO
-            </span>{" "}
-            for each market, calibrated against brands that already made that
-            exact move. Plus the routes in.
+            Validly reads your store data, compares it with brands that already
+            entered each market, and returns a verdict plus a specific entry plan.
           </p>
         </Reveal>
 
@@ -199,11 +194,10 @@ export function Hero() {
           </Magnetic>
         </Reveal>
 
-        {/* The one externally verifiable fact */}
+        {/* Core insight */}
         <Reveal delay={0.38} className="mt-14 max-w-2xl">
           <p className="text-pretty text-base leading-relaxed text-muted-foreground/80 sm:text-lg">
-            Shopify removed peer benchmarks from Analytics on 19 May 2026.
-            Nothing replaced them.
+            Your data shows the spark. Peer outcomes show whether to act.
           </p>
         </Reveal>
       </div>
