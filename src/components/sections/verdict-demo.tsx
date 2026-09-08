@@ -23,7 +23,7 @@ export function VerdictDemo() {
           </Reveal>
         </div>
 
-        {/* The verdict card — NOT YET · Germany */}
+        {/* The verdict card - NOT YET · Germany */}
         <Reveal delay={0.1} className="mx-auto mt-10 max-w-3xl">
           <div className="relative overflow-hidden rounded-3xl border border-border/60 bg-card/80 p-7 shadow-[0_30px_80px_-40px_oklch(0.45_0.11_160/0.5)] backdrop-blur-xl sm:p-9">
             <div className="pointer-events-none absolute -right-20 -top-20 h-64 w-64 rounded-full bg-amber-warm/25 blur-3xl" />
@@ -69,9 +69,9 @@ export function VerdictDemo() {
             <div className="relative mt-6 rounded-xl bg-muted/40 p-4">
               <p className="font-mono text-xs font-bold uppercase tracking-wider text-muted-foreground">Why NOT YET</p>
               <p className="mt-2 text-base leading-relaxed text-foreground/85 text-pretty">
-                Interest is real, but the economics are not ready to scale. Heely
-                acquired German customers at €86—worse than five of six comparable
-                brands and outside the €59–€74 band where later scalers landed.
+                Heely acquired German customers at €86. The peer median is €68,
+                and brands that later scaled landed between €59 and €74. Heely is
+                currently outside the viable range.
               </p>
             </div>
 
@@ -81,7 +81,7 @@ export function VerdictDemo() {
               <div>
                 <p className="font-mono text-xs font-bold uppercase tracking-wider text-sage-deep">What changes the verdict</p>
                 <p className="mt-1.5 text-base leading-relaxed text-foreground text-pretty">
-                  Bring probe CAC below €62 for two consecutive rounds.
+                  Bring probe CAC into the €59 to €74 range for two consecutive rounds.
                 </p>
               </div>
             </div>

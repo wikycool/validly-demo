@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 
 /**
- * validly mark — a refined lowercase "v".
+ * validly mark - a refined lowercase "v".
  * Two converging strokes forming a check-like v, inside a soft rounded
  * square. The strokes draw on once, then breathe gently. No fourth wall.
  */
@@ -23,7 +23,7 @@ export function ValidlyMark({
       fill="none"
       aria-hidden
     >
-      {/* Soft container — a rounded square, very faint */}
+      {/* Soft container - a rounded square, very faint */}
       <rect
         x="2"
         y="2"
@@ -35,7 +35,7 @@ export function ValidlyMark({
         opacity="0.16"
       />
 
-      {/* The "v" — two strokes meeting at the bottom center */}
+      {/* The "v" - two strokes meeting at the bottom center */}
       <motion.path
         d="M8 11 L16 23 L24 11"
         stroke="currentColor"
@@ -61,7 +61,7 @@ export function ValidlyMark({
         }
       />
 
-      {/* Small accent dot at the apex — a subtle "decision point" */}
+      {/* Small accent dot at the apex - a subtle "decision point" */}
       <motion.circle
         cx="16"
         cy="23"
@@ -93,7 +93,7 @@ export function ValidlyMark({
   );
 }
 
-/** The full wordmark — mark + lowercase word. Hover spins the mark gently. */
+/** The full wordmark - mark + lowercase word. Hover spins the mark gently. */
 export function ValidlyWordmark({
   className,
   markClassName,

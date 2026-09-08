@@ -8,6 +8,7 @@ import {
   AlertCircle,
   ArrowLeft,
   Lock,
+  LoaderCircle,
   TrendingUp,
   ShieldCheck,
 } from "lucide-react";
@@ -53,7 +54,7 @@ export function Workspace() {
 
   return (
     <div className="flex flex-1 flex-col bg-background">
-      {/* Stepper — compact, projector-readable, active stage obvious */}
+      {/* Stepper - compact, projector-readable, active stage obvious */}
       <div className="sticky top-14 z-30 border-b border-border/60 bg-background/90 backdrop-blur-md">
         <div className="mx-auto flex max-w-6xl items-center gap-1 px-4 py-2.5 sm:px-6">
           {STEP_LABELS.map((s, i) => {
@@ -100,6 +101,17 @@ export function Workspace() {
 
 /* ---------------- 01 Connect ---------------- */
 function ConnectStep({ onNext }: { onNext: () => void }) {
+  const [phase, setPhase] = React.useState(0);
+
+  React.useEffect(() => {
+    const shopifyDone = window.setTimeout(() => setPhase(1), 1100);
+    const ga4Done = window.setTimeout(() => setPhase(2), 2400);
+    return () => {
+      window.clearTimeout(shopifyDone);
+      window.clearTimeout(ga4Done);
+    };
+  }, []);
+
   return (
     <motion.section
       initial={{ opacity: 0, y: 12 }}
@@ -118,23 +130,58 @@ function ConnectStep({ onNext }: { onNext: () => void }) {
       </p>
 
       <div className="mt-8 space-y-3">
-        <ConnectRow name="Shopify" sub="orders · products · customers" done="24 months of orders" />
-        <ConnectRow name="GA4" sub="sessions · sources · landing pages" done="24 months of sessions" />
+        <ConnectRow
+          name="Shopify"
+          sub="orders · products · customers"
+          done="24 months of orders"
+          status={phase === 0 ? "connecting" : "connected"}
+        />
+        <ConnectRow
+          name="GA4"
+          sub="sessions · sources · landing pages"
+          done="24 months of sessions"
+          status={phase === 0 ? "waiting" : phase === 1 ? "connecting" : "connected"}
+        />
       </div>
 
-      <PrimaryButton className="mt-8" onClick={onNext}>
-        Continue to signals
+      <PrimaryButton className="mt-8" onClick={onNext} disabled={phase < 2}>
+        {phase < 2 ? "Reading store data" : "Continue to signals"}
         <ArrowRight className="h-5 w-5" />
       </PrimaryButton>
     </motion.section>
   );
 }
 
-function ConnectRow({ name, sub, done }: { name: string; sub: string; done: string }) {
+function ConnectRow({
+  name,
+  sub,
+  done,
+  status,
+}: {
+  name: string;
+  sub: string;
+  done: string;
+  status: "waiting" | "connecting" | "connected";
+}) {
+  const connected = status === "connected";
+  const connecting = status === "connecting";
+
   return (
-    <div className="flex items-center justify-between rounded-2xl border border-sage/40 bg-sage-soft/30 p-4">
+    <div
+      className={cn(
+        "flex items-center justify-between rounded-2xl border p-4 transition-all duration-700",
+        connected && "border-sage/40 bg-sage-soft/45",
+        connecting && "border-sage/25 bg-sage-soft/15",
+        status === "waiting" && "border-border/60 bg-card/40",
+      )}
+    >
       <div className="flex items-center gap-3">
-        <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-sage text-base font-bold text-white">
+        <span
+          className={cn(
+            "inline-flex h-10 w-10 items-center justify-center rounded-xl text-base font-bold transition-colors duration-700",
+            connected ? "bg-sage text-white" : "bg-muted text-muted-foreground",
+          )}
+        >
           {name === "Shopify" ? "S" : "G"}
         </span>
         <div>
@@ -143,10 +190,22 @@ function ConnectRow({ name, sub, done }: { name: string; sub: string; done: stri
         </div>
       </div>
       <div className="flex items-center gap-2.5">
-        <span className="hidden font-mono text-sm text-sage-deep sm:inline">{done}</span>
-        <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-sage text-white">
-          <Check className="h-3.5 w-3.5" />
+        <span className={cn("hidden font-mono text-sm sm:inline", connected ? "text-sage-deep" : "text-muted-foreground")}>
+          {connected ? done : connecting ? "Connecting..." : "Waiting"}
         </span>
+        {connected ? (
+          <motion.span
+            initial={{ scale: 0.6, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-sage text-white"
+          >
+            <Check className="h-3.5 w-3.5" />
+          </motion.span>
+        ) : connecting ? (
+          <LoaderCircle className="h-5 w-5 animate-spin text-sage-deep" />
+        ) : (
+          <span className="h-5 w-5 rounded-full border border-border" />
+        )}
       </div>
     </div>
   );
@@ -247,7 +306,7 @@ function SignalsStep({ onPick }: { onPick: () => void }) {
 
       <p className="mt-3 font-mono text-sm text-muted-foreground/70">
         Netherlands is the strongest opportunity. Germany has more traffic but
-        weaker purchase intent—a controlled probe will show whether the problem
+        weaker purchase intent. A controlled probe will show whether the problem
         is demand, localization or the offer.
       </p>
     </motion.section>
@@ -269,7 +328,7 @@ function ProbeStep({ onRun }: { onRun: () => void }) {
       </h1>
       <p className="mt-2 max-w-3xl text-base text-muted-foreground text-pretty">
         The selected creative sends German customers to a localized Heely product
-        page. Orders—not views—determine the verdict.
+        page. Orders, not views, determine the verdict.
       </p>
 
       {/* Three summary cards */}
@@ -290,7 +349,7 @@ function ProbeStep({ onRun }: { onRun: () => void }) {
 
         {/* Two-column: 38 / 62, tops aligned, max 1100px, gap 32px */}
         <div className="mt-3 grid gap-8 lg:grid-cols-[38fr_62fr] lg:items-start">
-          {/* LEFT — Traffic creative */}
+          {/* LEFT - Traffic creative */}
           <div className="flex flex-col">
             <div className="flex items-center justify-between gap-2">
               <p className="font-mono text-xs uppercase tracking-wider text-muted-foreground">1 · Traffic creative</p>
@@ -314,7 +373,7 @@ function ProbeStep({ onRun }: { onRun: () => void }) {
             </p>
           </div>
 
-          {/* RIGHT — What German customers see (browser-style, top aligned) */}
+          {/* RIGHT - What German customers see (browser-style, top aligned) */}
           <div className="flex flex-col">
             <p className="font-mono text-xs uppercase tracking-wider text-muted-foreground">2 · What German customers see</p>
 
@@ -356,7 +415,7 @@ function ProbeStep({ onRun }: { onRun: () => void }) {
           </div>
         </div>
 
-        {/* Bottom action row — spans full width */}
+        {/* Bottom action row - spans full width */}
         <div className="mt-3 flex flex-col items-stretch justify-between gap-3 border-t border-border/60 pt-3 sm:flex-row sm:items-center">
           <p className="font-mono text-sm text-muted-foreground">
             €2,000 media cap · Heely&apos;s own ad account · 14 days
@@ -389,7 +448,6 @@ function ResultsStep({ onNext }: { onNext: () => void }) {
         The probe reached the time limit before the €2,000 media cap.
       </p>
 
-      {/* Status strip */}
       <div className="mt-5 flex flex-wrap items-center gap-2 rounded-xl border border-border/60 bg-card/50 px-4 py-2.5 font-mono text-sm font-medium text-foreground">
         <span className="inline-flex items-center gap-1.5">
           <Check className="h-4 w-4 text-sage-deep" />
@@ -401,7 +459,6 @@ function ResultsStep({ onNext }: { onNext: () => void }) {
         <span>{p.orders} orders</span>
       </div>
 
-      {/* Diagnostics — quiet */}
       <div className="mt-6">
         <p className="font-mono text-xs uppercase tracking-wider text-muted-foreground/60">Diagnostics</p>
         <div className="mt-2 grid grid-cols-2 gap-3 sm:grid-cols-4">
@@ -412,26 +469,19 @@ function ResultsStep({ onNext }: { onNext: () => void }) {
         </div>
       </div>
 
-      {/* Decision metrics — dominant */}
       <div className="mt-6">
         <p className="font-mono text-xs uppercase tracking-wider text-muted-foreground/60">Decision metrics</p>
         <div className="mt-2 grid grid-cols-2 gap-3 sm:grid-cols-4">
           <BigMetric label="Orders" value={String(p.orders)} tone="sage" />
           <BigMetric label="Probe CAC" value={p.probeCac} tone="sage" />
-          <SmallMetric label="Home CAC baseline" value={p.homeCac} />
-          <SmallMetric label="Difference" value={p.cacVsHome + " home"} />
+          <SmallMetric label="Media spend" value={p.actualSpend} />
+          <SmallMetric label="Product-page CVR" value="3.7%" />
         </div>
       </div>
 
-      {/* Stop rule */}
-      <div className="mt-5 flex items-center justify-between rounded-xl border border-border/60 bg-card/50 px-4 py-2.5">
-        <span className="font-mono text-sm text-muted-foreground">Stop rule reached</span>
-        <span className="font-mono text-sm font-semibold text-foreground">14 days</span>
-      </div>
-
       <p className="mt-4 max-w-3xl text-lg leading-relaxed text-muted-foreground text-pretty">
-        The reel generated attention and real orders. The question is whether €86
-        is normal for a Nordic footwear brand entering Germany.
+        Eight German customers bought. Now Validly checks whether €86 CAC is
+        competitive for a Nordic footwear brand entering Germany.
       </p>
 
       <PrimaryButton className="mt-6" onClick={onNext}>
@@ -486,20 +536,13 @@ function PeerSetStep({ onNext, onBack }: { onNext: () => void; onBack: () => voi
     >
       <Eyebrow n="05" label="Peer set" tone="sage" />
       <h1 className="mt-2 font-display text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
-        Is €86 a Germany problem—or a Heely problem?
+        How does €86 compare?
       </h1>
       <p className="mt-2 max-w-2xl text-lg text-muted-foreground text-pretty">
-        Six comparable brands already entered Germany. Names are hidden; patterns
-        remain.
+        Validly found six comparable Nordic brands that already entered Germany.
       </p>
 
-      {/* Equation — no animation */}
-      <p className="mt-4 font-mono text-base text-muted-foreground">
-        6 comparable peers + Heely = <span className="font-semibold text-foreground">7 anonymous probe outcomes</span>
-      </p>
-
-      {/* Filters */}
-      <div className="mt-5 flex flex-wrap items-center gap-2">
+      <div className="mt-4 flex flex-wrap items-center gap-2">
         {PEER_FILTERS.map((f) => (
           <span key={f} className="rounded-full bg-accent/50 px-3 py-1.5 font-mono text-xs uppercase tracking-wider text-accent-foreground">
             {f}
@@ -507,92 +550,85 @@ function PeerSetStep({ onNext, onBack }: { onNext: () => void; onBack: () => voi
         ))}
       </div>
 
-      {/* Comparison cards */}
-      <div className="mt-5 grid gap-4 lg:grid-cols-3">
-        {/* Primary — probe CAC */}
-        <div className="rounded-2xl border border-border/60 bg-card/60 p-5">
-          <p className="font-mono text-xs uppercase tracking-wider text-muted-foreground">Probe CAC</p>
-          <div className="mt-3 flex items-end gap-3">
+      <div className="mt-5 grid gap-4 lg:grid-cols-[1.6fr_1fr]">
+        <div className="rounded-2xl border border-border/60 bg-card/70 p-5 sm:p-6">
+          <div className="flex flex-wrap items-start justify-between gap-4">
             <div>
-              <p className="font-mono text-xs uppercase tracking-wider text-muted-foreground">You</p>
-              <p className="font-display text-3xl font-semibold tabular-nums tracking-tight text-clay">€86</p>
+              <p className="font-mono text-xs uppercase tracking-wider text-muted-foreground">Your probe CAC</p>
+              <p className="mt-1 font-display text-5xl font-semibold tabular-nums tracking-tight text-clay">€86</p>
             </div>
-            <span className="pb-1 font-mono text-xs text-muted-foreground/50">vs</span>
-            <div>
+            <div className="text-right">
               <p className="font-mono text-xs uppercase tracking-wider text-muted-foreground">Peer median</p>
-              <p className="font-display text-2xl font-semibold tabular-nums tracking-tight text-muted-foreground">€68</p>
+              <p className="mt-1 font-display text-3xl font-semibold tabular-nums tracking-tight text-foreground">€68</p>
+              <p className="mt-1 font-mono text-xs text-muted-foreground">6 comparable brands</p>
             </div>
           </div>
 
-          {/* Shaded band visual — Heely marker visibly outside */}
-          <div className="mt-5">
-            <div className="relative h-3 rounded-full bg-muted">
-              <div className="absolute h-full rounded-full bg-sage/25" style={{ left: "28%", right: "32%" }} />
-              <div className="absolute top-1/2 h-5 w-1.5 -translate-y-1/2 rounded-full bg-clay" style={{ left: "82%" }} />
+          <div className="mt-7">
+            <div className="relative h-4 rounded-full bg-muted">
+              <div className="absolute h-full rounded-full bg-sage/30" style={{ left: "18%", width: "38%" }} />
+              <div className="absolute top-1/2 h-7 w-1.5 -translate-y-1/2 rounded-full bg-clay" style={{ left: "84%" }} />
             </div>
-            <div className="mt-1.5 flex justify-between font-mono text-xs text-muted-foreground/70">
-              <span>€59</span>
-              <span>€74</span>
+            <div className="relative mt-2 h-5 font-mono text-xs text-muted-foreground">
+              <span className="absolute left-[18%] -translate-x-1/2">€59</span>
+              <span className="absolute left-[56%] -translate-x-1/2">€74</span>
+              <span className="absolute left-[84%] -translate-x-1/2 font-semibold text-clay">You €86</span>
             </div>
-            <p className="mt-1.5 font-mono text-xs text-muted-foreground/70">Later-scaler band: €59–€74</p>
+            <div className="mt-2 flex items-center gap-2 text-sm text-muted-foreground">
+              <span className="h-2.5 w-6 rounded-full bg-sage/30" />
+              Brands that later scaled landed between €59 and €74
+            </div>
           </div>
 
-          <div className="mt-4 inline-block rounded-full bg-clay/15 px-2.5 py-1 font-mono text-xs font-semibold text-clay">
+          <div className="mt-5 inline-block rounded-full bg-clay/15 px-3 py-1.5 font-mono text-sm font-semibold text-clay">
             {peers.ranking}
           </div>
         </div>
 
-        {/* Secondary — pre-entry conversion */}
-        <div className="rounded-2xl border border-border/60 bg-card/60 p-5">
-          <p className="font-mono text-xs uppercase tracking-wider text-muted-foreground">Pre-entry conversion vs home</p>
-          <div className="mt-3 flex items-end gap-3">
-            <div>
-              <p className="font-mono text-xs uppercase tracking-wider text-muted-foreground">You</p>
-              <p className="font-display text-3xl font-semibold tabular-nums tracking-tight text-foreground">0.22×</p>
-            </div>
-            <span className="pb-1 font-mono text-xs text-muted-foreground/50">vs</span>
-            <div>
-              <p className="font-mono text-xs uppercase tracking-wider text-muted-foreground">Peer median</p>
-              <p className="font-display text-2xl font-semibold tabular-nums tracking-tight text-muted-foreground">0.38×</p>
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-1">
+          <div className="rounded-2xl border border-border/60 bg-card/60 p-5">
+            <p className="font-mono text-xs uppercase tracking-wider text-muted-foreground">Signal before the probe</p>
+            <div className="mt-3 flex items-end gap-3">
+              <div>
+                <p className="font-mono text-xs uppercase tracking-wider text-muted-foreground">You</p>
+                <p className="font-display text-3xl font-semibold tabular-nums tracking-tight text-foreground">0.22×</p>
+              </div>
+              <span className="pb-1 font-mono text-xs text-muted-foreground/50">vs</span>
+              <div>
+                <p className="font-mono text-xs uppercase tracking-wider text-muted-foreground">Peer median</p>
+                <p className="font-display text-2xl font-semibold tabular-nums tracking-tight text-muted-foreground">0.38×</p>
+              </div>
             </div>
           </div>
-          <p className="mt-5 text-base leading-relaxed text-muted-foreground text-pretty">
-            Your pre-order conversion is 0.22× your home rate. Peers hit 0.38× in
-            Germany.
-          </p>
-        </div>
 
-        {/* Outcome — 18-month */}
-        <div className="rounded-2xl border border-border/60 bg-card/60 p-5">
-          <p className="font-mono text-xs uppercase tracking-wider text-muted-foreground">18-month outcome</p>
-          <p className="mt-3 font-display text-3xl font-semibold tabular-nums tracking-tight text-foreground">
-            {peers.scaledCount}
-          </p>
-          <p className="mt-1 text-base text-muted-foreground text-pretty">
-            comparable brands later scaled
-          </p>
+          <div className="rounded-2xl border border-border/60 bg-card/60 p-5">
+            <p className="font-mono text-xs uppercase tracking-wider text-muted-foreground">What happened next</p>
+            <p className="mt-2 font-display text-3xl font-semibold tabular-nums tracking-tight text-foreground">
+              {peers.scaledCount}
+            </p>
+            <p className="mt-1 text-base text-muted-foreground">peers scaled in Germany within 18 months</p>
+          </div>
         </div>
       </div>
 
-      {/* Conclusion */}
       <div className="mt-5 flex items-start gap-2.5 rounded-xl border border-sage/20 bg-sage-soft/40 p-4">
         <TrendingUp className="mt-0.5 h-5 w-5 shrink-0 text-sage-deep" />
         <p className="text-base leading-relaxed text-foreground text-pretty">
-          Comparable brands acquired German customers for less. The market is
-          viable; Heely&apos;s current route is not.
+          Germany can work. Comparable brands acquired customers for less, so
+          Heely&apos;s current route is not ready to scale.
         </p>
       </div>
 
-      {/* Privacy */}
-      <p className="mt-4 flex items-center gap-1.5 font-mono text-sm text-muted-foreground/60">
-        <ShieldCheck className="h-4 w-4" />
-        No brand names. No raw customer data. Only cohort-level outcomes.
-      </p>
-
-      <PrimaryButton className="mt-6" onClick={onNext}>
-        See the verdict
-        <ArrowRight className="h-5 w-5" />
-      </PrimaryButton>
+      <div className="mt-4 flex flex-wrap items-center justify-between gap-4">
+        <p className="flex items-center gap-1.5 font-mono text-sm text-muted-foreground/60">
+          <ShieldCheck className="h-4 w-4" />
+          Cohort results only. Brand and customer data stay private.
+        </p>
+        <PrimaryButton onClick={onNext}>
+          See the verdict
+          <ArrowRight className="h-5 w-5" />
+        </PrimaryButton>
+      </div>
     </motion.section>
   );
 }
@@ -617,14 +653,16 @@ function VerdictStep({
 
       <div className="mt-2 flex items-center gap-4">
         <h1 className="font-display text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
-          Keep Germany in probe.
+          Germany is not ready to scale.
         </h1>
         <span className="inline-flex items-center gap-1.5 rounded-full bg-amber-warm px-3.5 py-1.5 text-base font-bold uppercase tracking-wider text-[oklch(0.40_0.10_60)]">
           <AlertCircle className="h-4 w-4" />
           NOT YET
         </span>
       </div>
-      <p className="mt-1 text-lg text-muted-foreground text-pretty">Do not scale it yet.</p>
+      <p className="mt-1 text-lg text-muted-foreground text-pretty">
+        Demand exists. The current route is too expensive.
+      </p>
 
       {/* Four summary metrics */}
       <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
@@ -646,9 +684,8 @@ function VerdictStep({
         <p className="mt-1.5 text-base leading-relaxed text-foreground text-pretty">{p.whatChanges}</p>
       </div>
 
-      {/* Recommended route */}
       <div className="mt-2.5">
-        <p className="font-mono text-xs font-bold uppercase tracking-wider text-muted-foreground">Recommended route</p>
+        <p className="font-mono text-xs font-bold uppercase tracking-wider text-muted-foreground">Three routes forward</p>
         <div className="mt-2 grid gap-2.5 sm:grid-cols-3">
           {p.routes.map((r) => (
             <div
@@ -672,10 +709,9 @@ function VerdictStep({
         </div>
       </div>
 
-      {/* Buttons */}
       <div className="mt-4 flex flex-wrap gap-3">
         <PrimaryButton onClick={onPrimary}>
-          Prepare the next probe
+          Prepare Germany re-test
           <ArrowRight className="h-5 w-5" />
         </PrimaryButton>
         <SecondaryButton onClick={onSecondary}>
@@ -684,10 +720,8 @@ function VerdictStep({
         </SecondaryButton>
       </div>
 
-      {/* Pool note */}
       <p className="mt-4 font-mono text-sm text-muted-foreground/60">
-        Heely&apos;s result is added anonymously. The next comparable brand gets a
-        sharper verdict. n = 7.
+        This result joins the peer set anonymously. The cohort grows from 6 to 7.
       </p>
     </motion.section>
   );
@@ -711,12 +745,23 @@ function Eyebrow({ n, label, tone }: { n: string; label: string; tone: "sage" | 
   );
 }
 
-function PrimaryButton({ children, className, onClick }: { children: React.ReactNode; className?: string; onClick: () => void }) {
+function PrimaryButton({
+  children,
+  className,
+  onClick,
+  disabled = false,
+}: {
+  children: React.ReactNode;
+  className?: string;
+  onClick: () => void;
+  disabled?: boolean;
+}) {
   return (
     <button
       onClick={onClick}
+      disabled={disabled}
       className={cn(
-        "group inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 text-base font-semibold text-primary-foreground shadow-[0_12px_30px_-10px_oklch(0.45_0.11_160/0.5)] transition-all hover:shadow-[0_16px_36px_-10px_oklch(0.45_0.11_160/0.6)]",
+        "group inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 text-base font-semibold text-primary-foreground shadow-[0_12px_30px_-10px_oklch(0.45_0.11_160/0.5)] transition-all hover:shadow-[0_16px_36px_-10px_oklch(0.45_0.11_160/0.6)] disabled:cursor-wait disabled:opacity-50 disabled:shadow-none",
         className,
       )}
     >

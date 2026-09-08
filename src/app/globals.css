@@ -43,7 +43,7 @@
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
 
-  /* Brand tokens — the "Compass" palette */
+  /* Brand tokens - the "Compass" palette */
   --color-sage: var(--sage);
   --color-sage-deep: var(--sage-deep);
   --color-sage-soft: var(--sage-soft);
@@ -56,11 +56,11 @@
 :root {
   --radius: 0.875rem;
 
-  /* "Compass" palette — brain-friendly, Nordic, decision-themed.
+  /* "Compass" palette - brain-friendly, Nordic, decision-themed.
      Grounded in color-psychology research: calm green reduces eye strain &
      cognitive load; warm oat neutrals lower visual noise; amber gives gentle
      alertness (verdict); clay = warm caution (NO-GO) without cortisol spike. */
-  --sage: oklch(0.62 0.13 155);          /* primary — trust / growth / GO */
+  --sage: oklch(0.62 0.13 155);          /* primary - trust / growth / GO */
   --sage-deep: oklch(0.45 0.11 160);     /* deep primary for dark surfaces */
   --sage-soft: oklch(0.88 0.03 155);     /* tint backgrounds */
   --amber-warm: oklch(0.80 0.14 75);     /* verdict / intelligence accent */

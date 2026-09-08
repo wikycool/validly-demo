@@ -1,5 +1,5 @@
 /**
- * validly workspace data — one canonical Germany story.
+ * validly workspace data - one canonical Germany story.
  * All numbers verified: €688 spend ÷ 8 orders = €86 probe CAC.
  */
 
@@ -12,8 +12,6 @@ export const HEELY = {
   price: "€189",
   home: "Denmark",
   homeCac: "€49",
-  handle: "@heely",
-  domain: "heely.com",
   headline: "Heels you can wear all day.",
 };
 
@@ -142,8 +140,8 @@ export const PROBE: ProbeResult = {
     preEntryPeer: "0.38×",
     scaledCount: "4 of 6",
   },
-  why: "Interest is real, but the economics are not ready to scale. Heely acquired German customers at €86—worse than five of six comparable brands and outside the €59–€74 band where later scalers landed.",
-  whatChanges: "Bring probe CAC below €62 for two consecutive rounds.",
+  why: "Heely acquired German customers at €86. The peer median is €68, and brands that later scaled landed between €59 and €74. Heely is currently outside the viable range.",
+  whatChanges: "Bring probe CAC into the €59 to €74 range for two consecutive rounds.",
   routes: [
     {
       title: "Localize checkout and returns",
@@ -151,8 +149,8 @@ export const PROBE: ProbeResult = {
       badge: "Recommended",
     },
     {
-      title: "Keep the content engine running",
-      desc: "Test new native hooks, but scale only against orders—not views.",
+      title: "Test the offer",
+      desc: "Keep the product and market fixed, then test price and messaging against orders.",
     },
     {
       title: "Retail partner first",

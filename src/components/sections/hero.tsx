@@ -164,7 +164,7 @@ export function Hero() {
           </h1>
         </Reveal>
 
-        {/* Subhead — exact copy */}
+        {/* Subhead - exact copy */}
         <Reveal delay={0.16} className="mt-7 max-w-3xl">
           <p className="text-pretty text-lg leading-relaxed text-muted-foreground sm:text-xl">
             Validly connects to your Shopify store, reads 24 months of demand by
@@ -172,12 +172,12 @@ export function Hero() {
             <span className="font-semibold text-sage-deep">
               GO / NOT YET / NO-GO
             </span>{" "}
-            for each market — calibrated against brands that already made that
+            for each market, calibrated against brands that already made that
             exact move. Plus the routes in.
           </p>
         </Reveal>
 
-        {/* CTAs — primary "See a verdict" (anchor), secondary "Connect Shopify" (opens workspace) */}
+        {/* CTAs - primary "See a verdict" (anchor), secondary "Connect Shopify" (opens workspace) */}
         <Reveal delay={0.28} className="mt-9 flex flex-col items-center gap-3 sm:flex-row sm:gap-4">
           <Magnetic strength={0.3}>
             <Link

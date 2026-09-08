@@ -21,9 +21,9 @@ const fraunces = Fraunces({
 });
 
 export const metadata: Metadata = {
-  title: "validly — which country should your Shopify brand enter next?",
+  title: "validly | Which country should your Shopify brand enter next?",
   description:
-    "validly connects to your Shopify store, reads 24 months of demand by country, and returns GO / NOT YET / NO-GO for each market — calibrated against brands that already made that exact move.",
+    "Validly connects to your Shopify store, reads 24 months of demand by country, and returns GO / NOT YET / NO-GO for each market, calibrated against brands that already made that exact move.",
   keywords: [
     "Shopify expansion",
     "international expansion",
@@ -37,7 +37,7 @@ export const metadata: Metadata = {
     icon: "https://z-cdn.chatglm.cn/z-ai/static/logo.svg",
   },
   openGraph: {
-    title: "validly — which country should your Shopify brand enter next?",
+    title: "validly | Which country should your Shopify brand enter next?",
     description:
       "Reads 24 months of demand by country. Returns GO / NOT YET / NO-GO per market, against an anonymous peer set.",
     url: "https://chat.z.ai",
@@ -46,7 +46,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "validly — which country should your Shopify brand enter next?",
+    title: "validly | Which country should your Shopify brand enter next?",
     description:
       "A demand audit for Shopify brands. GO / NOT YET / NO-GO.",
   },

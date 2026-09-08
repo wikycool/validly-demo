@@ -15,7 +15,7 @@ const NAV_LINKS = [
   { label: "Pricing", href: "#pricing" },
 ];
 
-/** Marketing nav — appears on the marketing view */
+/** Marketing nav - appears on the marketing view */
 export function SiteNav() {
   const [scrolled, setScrolled] = React.useState(false);
   const [open, setOpen] = React.useState(false);
@@ -60,7 +60,7 @@ export function SiteNav() {
           ))}
         </nav>
 
-        {/* CTA — single primary button */}
+        {/* CTA - single primary button */}
         <div className="hidden md:flex">
           <Magnetic strength={0.4}>
             <Link
@@ -120,7 +120,7 @@ export function SiteNav() {
   );
 }
 
-/** Workspace header — appears on the workspace view. Brand-aware. */
+/** Workspace header - appears on the workspace view. Brand-aware. */
 export function WorkspaceNav() {
   const backToMarketing = useView((s) => s.backToMarketing);
   return (
@@ -142,23 +142,7 @@ export function WorkspaceNav() {
             <span className="font-display text-base font-semibold text-foreground">
               Heely
             </span>
-            <span className="rounded-full bg-muted px-2 py-0.5 font-mono text-xs font-medium uppercase tracking-wider text-muted-foreground">
-              Shopify connected · read-only
-            </span>
           </div>
-        </div>
-        <div className="flex items-center gap-3">
-          <span className="hidden font-mono text-sm text-muted-foreground/70 sm:inline">
-            @heely
-          </span>
-          <Link
-            href="https://heely.com"
-            target="_blank"
-            rel="noreferrer"
-            className="font-mono text-sm text-sage-deep hover:underline"
-          >
-            heely.com
-          </Link>
         </div>
       </div>
     </header>

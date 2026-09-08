@@ -11,7 +11,7 @@ import {
 import { cn } from "@/lib/utils";
 
 /* ------------------------------------------------------------------ */
-/* Reveal — fade + rise on scroll into view                            */
+/* Reveal - fade + rise on scroll into view                            */
 /* ------------------------------------------------------------------ */
 export function Reveal({
   children,
@@ -82,7 +82,7 @@ export function StaggerGroup({
 }
 
 /* ------------------------------------------------------------------ */
-/* Counter — animated number on scroll into view                       */
+/* Counter - animated number on scroll into view                       */
 /* ------------------------------------------------------------------ */
 export function Counter({
   to,
@@ -134,7 +134,7 @@ export function Counter({
 }
 
 /* ------------------------------------------------------------------ */
-/* Magnetic — subtle magnetic hover toward cursor                       */
+/* Magnetic - subtle magnetic hover toward cursor                       */
 /* ------------------------------------------------------------------ */
 export function Magnetic({
   children,
@@ -180,7 +180,7 @@ export function Magnetic({
 }
 
 /* ------------------------------------------------------------------ */
-/* Parallax layer — translateY based on scroll                          */
+/* Parallax layer - translateY based on scroll                          */
 /* ------------------------------------------------------------------ */
 export function Parallax({
   children,
@@ -221,7 +221,7 @@ export function Parallax({
 }
 
 /* ------------------------------------------------------------------ */
-/* Tilt — 3D tilt on hover (for cards)                                  */
+/* Tilt - 3D tilt on hover (for cards)                                  */
 /* ------------------------------------------------------------------ */
 export function Tilt({
   children,
@@ -271,7 +271,7 @@ export function Tilt({
 }
 
 /* ------------------------------------------------------------------ */
-/* useMousePosition — for parallax orbs                                 */
+/* useMousePosition - for parallax orbs                                 */
 /* ------------------------------------------------------------------ */
 export function useMousePosition() {
   const [pos, setPos] = React.useState({ x: 0, y: 0 });

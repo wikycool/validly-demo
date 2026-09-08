@@ -28,7 +28,7 @@ export function SiteFooter() {
             </Link>
           </nav>
 
-          {/* Logo strip — kept once, here only */}
+          {/* Logo strip - kept once, here only */}
           <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2">
             {INTEGRATIONS.map((name) => (
               <div

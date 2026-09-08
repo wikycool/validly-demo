@@ -1,18 +1,24 @@
 # Validly
 
-Which country should your Shopify brand enter next?
+Demo site for Validly: which country a Shopify brand should enter next.
 
 ## Run locally
 
 ```bash
+cd validly
 npm install
 npm run dev
 ```
 
-Open http://127.0.0.1:43147
+Open the printed localhost URL. Click **See a verdict** or **Connect Shopify** to enter the Heely workspace.
 
-Click **Connect Shopify** or **See a verdict** to enter the Heely workspace.
+## Demo path
 
-## Deploy on Vercel
+1. Connect
+2. Signals — Netherlands is recommended; only Germany has a probe in this build
+3. Probe — play DE-01 with sound
+4. Results → Peer set → Verdict
 
-Import this repository. Leave Root Directory empty — the Next.js app is at the repo root.
+## Deploy
+
+Push the `validly/` folder to Vercel as the project root, or set Root Directory to `validly`.
